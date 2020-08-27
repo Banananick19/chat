@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ lobby }}{% endblock %}
+
+{% block content %}
+    <div class="messages">
+
+    </div>
+    <input type="text" name="message">
+    <input type="submit" name="sub">
+    <script defer>
+
+
+            let input_message = document.querySelector('input[name="message"]');
+            let message_sub = document.querySelector('input[name="sub"]');
+            let messages_container = document.querySelector('div.messages');
+
+            let lobby = "{{ lobby|escapejs }}";
+
+            let chatSocket = new WebSocket('ws://' + window.location.host + '/ws/chat/' + lobby + '/');
+
+            chatSocket.onmessage = function(e) {
+                let data = JSON.parse(e.data);
+                let message = data['message'];
+                messages_container.innerHTML += message + '<br>';
+            };
+
+            chatSocket.onclose = function(e) {
+                console.error('Chat socket closed unexpectedly');
+            };
+
+            input_message.focus();
+
+
+            message_sub.onclick = function(e) {
+                let message = input_message.value;
+                chatSocket.send(JSON.stringify({
+                    'message': message
+                }));
+        
+                input_message.value = '';
+            };
+
+    </script>
+{% endblock %}

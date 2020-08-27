@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}home{% endblock %}
+
+{% block content %}
+    <h1>{{ user.username }}</h1>
+    <input type="text" name="lobby">
+    <input type="submit" name='sub' value="Connect">
+
+    <script defer>
+        const input_lobby = document.querySelector('input[name="lobby"]');
+        const lobby_sub = document.querySelector('input[name="sub"]');
+
+        input_lobby.focus()
+        input_lobby.addEventListener('onkeydown', function(e) {
+            if ( e.keyCode == 13 ) {
+                lobby_sub.click();
+            }
+        });
+
+        lobby_sub.addEventListener('click', function(e) {
+            let roomName = input_lobby.value;
+            window.location.pathname = '/room/' + roomName + '/';
+        });
+    </script>
+{% endblock %}
